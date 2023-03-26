@@ -12,7 +12,11 @@ module.exports = {
         "2xl": "8rem",
       },
     },
-    extend: {},
+    extend: {
+      colors: {
+        custom: "#111",
+      },
+    },
   },
   plugins: [require("@headlessui/tailwindcss")],
 };

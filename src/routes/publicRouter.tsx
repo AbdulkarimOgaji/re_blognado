@@ -1,3 +1,6 @@
+import ErrorLogger from "@/components/ErrorLogger";
+import PublicLayout from "@/layouts/PublicLayout";
+import HomePage from "@/pages/HomePage";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -6,8 +9,8 @@ import {
 
 const publicRouter = createBrowserRouter(
   createRoutesFromElements(
-    <Route errorElement={<>Error occurred</>}>
-      <Route index element={<h1>Here</h1>}></Route>
+    <Route errorElement={<ErrorLogger />} element={<PublicLayout />}>
+      <Route index element={<HomePage />}></Route>
     </Route>,
   ),
 );
