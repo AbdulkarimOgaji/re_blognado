@@ -14,7 +14,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        custom: "#111",
+        primary: "#C4A484",
+        "primary-dark": "#944C04",
+      },
+      borderRadius: {
+        pill: "100vw",
+      },
+      maxWidth: {
+        "6xl": "80rem",
       },
     },
   },
