@@ -23,6 +23,9 @@ module.exports = {
       maxWidth: {
         "6xl": "80rem",
       },
+      letterSpacing: {
+        insane: "0.3em",
+      },
     },
   },
   plugins: [require("@headlessui/tailwindcss")],

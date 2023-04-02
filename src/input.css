@@ -7,3 +7,9 @@
 body {
   font-family: "Hind", sans-serif;
 }
+
+.blogs-grid {
+  display: grid;
+  gap: 4rem 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
