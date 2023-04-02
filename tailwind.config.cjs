@@ -16,6 +16,7 @@ module.exports = {
       colors: {
         primary: "#C4A484",
         "primary-dark": "#944C04",
+        facebook: "#3B5998",
       },
       borderRadius: {
         pill: "100vw",
