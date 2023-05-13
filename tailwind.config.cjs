@@ -20,6 +20,7 @@ module.exports = {
       },
       borderRadius: {
         pill: "100vw",
+        circle: "50%",
       },
       maxWidth: {
         "6xl": "80rem",

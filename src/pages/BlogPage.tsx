@@ -1,20 +1,9 @@
 import { ArrowUturnRightIcon } from "@heroicons/react/24/solid";
-import { Link } from "react-router-dom";
 import BlogCard from "./HomePage/BlogCard";
 import DummyBlogCard from "./HomePage/DummyBlogCard";
-import { usePopper } from "react-popper";
-import { useState } from "react";
+import AuthorPopOver from "@/components/AuthorPopOver";
 
 export default function BlogPage(): JSX.Element {
-  const [referenceElement, setReferenceElement] = useState<Element | null>(
-    null,
-  );
-  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
-  const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    modifiers: [{ name: "arrow", options: { element: arrowElement } }],
-  });
-
   return (
     <div className="container mx-auto my-6 min-h-screen py-20 2xl:px-60">
       <div className="mb-40">
@@ -28,20 +17,7 @@ export default function BlogPage(): JSX.Element {
           <div className="mr-0 flex items-center gap-2 md:mr-32">
             <div className="w-10 border border-black"></div>{" "}
             <span className="-mr-1 text-gray-500">by</span>
-            <button
-              type="button"
-              ref={setReferenceElement}
-              className="underline">
-              Abdulkarim Ogaji
-            </button>
-            <div
-              ref={setPopperElement}
-              style={styles.popper}
-              {...attributes.popper}
-              className="h-40 w-40 bg-red-500">
-              Popper element
-              <div ref={setArrowElement} style={styles.arrow} />
-            </div>
+            <AuthorPopOver />
           </div>
           <button>
             <ArrowUturnRightIcon className="h-6 w-6 font-bold text-gray-500" />
