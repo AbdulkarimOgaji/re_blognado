@@ -1,16 +1,41 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Fragment, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
   isOpen: boolean;
   closeModal: () => void;
 };
 
+const loginValidationSchema = z.object({
+  username_email: z.string().min(1, { message: "This field is required" }),
+  password: z.string().min(1, { message: "This field is required" }),
+});
+
+type LoginValidationSchema = z.infer<typeof loginValidationSchema>;
+
 export default function OnBoardingModal({ isOpen, closeModal }: Props) {
   const [screen, setScreen] = useState<"LOGIN" | "FORGOT_PASSWORD" | "SIGNUP">(
     "LOGIN",
   );
+
+  const methods = useForm<LoginValidationSchema>({
+    defaultValues: { username_email: "", password: "" },
+    resolver: zodResolver(loginValidationSchema),
+  });
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = methods;
+
+  const onSubmit: SubmitHandler<LoginValidationSchema> = async (data) => {
+    console.log("submitting", data);
+  };
 
   return (
     <>
@@ -40,7 +65,7 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
               afterLeave={() => setScreen("LOGIN")}>
               {screen === "LOGIN" ? (
                 <Dialog.Panel className="mb-32 w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-10 pt-6 text-left align-middle shadow-xl transition-all">
-                  <div className="mb-4 -mr-4 flex justify-end">
+                  <div className="-mr-4 mb-4 flex justify-end">
                     <button onClick={closeModal}>
                       <XMarkIcon className="h-6 w-6 font-bold text-gray-500 duration-100 hover:text-black" />
                     </button>
@@ -61,21 +86,32 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
                   <h3 className="mt-8 text-lg font-thin">
                     Already have an account?
                   </h3>
-                  <form className="mt-4 flex flex-col text-sm">
+                  <form
+                    className="mt-4 flex flex-col text-sm"
+                    onSubmit={handleSubmit(onSubmit)}>
                     <input
                       type="text"
+                      {...register("username_email")}
                       placeholder="Username or email"
-                      className="mb-4 rounded-sm bg-slate-100 px-3 py-2"
-                    />
-                    <input
-                      type="password"
-                      placeholder="Password"
                       className="rounded-sm bg-slate-100 px-3 py-2"
                     />
+                    <p className="mt-1 text-xs italic text-red-500 empty:hidden">
+                      {errors.username_email?.message}
+                    </p>
+                    <input
+                      type="password"
+                      {...register("password")}
+                      placeholder="Password"
+                      className="mt-4 rounded-sm bg-slate-100 px-3 py-2"
+                    />
+                    <p className="mt-1 text-xs italic text-red-500 empty:hidden">
+                      {errors.password?.message}
+                    </p>
                     <div className="mt-2 flex items-center justify-between">
                       <button
                         type="submit"
-                        className="rounded-md bg-facebook px-8 py-2 font-semibold text-white duration-100 hover:bg-blue-700">
+                        disabled={isSubmitting}
+                        className="rounded-md bg-facebook px-8 py-2 font-semibold text-white">
                         LOG IN
                       </button>
                       <button
@@ -87,7 +123,7 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
                     </div>
                   </form>
                   <button
-                    className="mt-4 mb-8 text-xs font-semibold text-facebook"
+                    className="mb-8 mt-4 text-xs font-semibold text-facebook"
                     onClick={() => setScreen("SIGNUP")}>
                     Create Account
                   </button>
@@ -95,7 +131,7 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
               ) : null}
               {screen === "SIGNUP" ? (
                 <Dialog.Panel className="mb-32 w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-10 pt-6 text-left align-middle shadow-xl transition-all">
-                  <div className="mb-4 -mr-4 flex justify-end">
+                  <div className="-mr-4 mb-4 flex justify-end">
                     <button onClick={closeModal}>
                       <XMarkIcon className="h-6 w-6 font-bold text-gray-500 duration-100 hover:text-black" />
                     </button>
@@ -136,9 +172,9 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
                     />
                     <p className="font-semibold selection:mb-3">Birth Date</p>
                     <div className="mb-4 flex gap-2">
-                      <select className="flex-grow bg-slate-100 py-1 px-2"></select>
-                      <select className="flex-grow bg-slate-100 py-1 px-2"></select>
-                      <select className="flex-grow bg-slate-100 py-1 px-2"></select>
+                      <select className="flex-grow bg-slate-100 px-2 py-1"></select>
+                      <select className="flex-grow bg-slate-100 px-2 py-1"></select>
+                      <select className="flex-grow bg-slate-100 px-2 py-1"></select>
                     </div>
                     {/* RE-CAPTCHA HERE */}
                     <div className="mb-4 flex items-start gap-4 text-xs">
