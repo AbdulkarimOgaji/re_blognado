@@ -7,13 +7,13 @@ export interface AuthState {
   isAuthenticated: boolean;
   role: UserRole;
   user_id: number;
-  token: string;
+  access_token: string;
 }
 
 export interface AuthLoginResult {
   role: UserRole;
   user_id: number;
-  token: string;
+  access_token: string;
   refresh_token: string;
 }
 
@@ -21,7 +21,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   role: "none",
   user_id: 0,
-  token: "",
+  access_token: "",
 };
 
 export const authSlice = createSlice({
@@ -30,15 +30,15 @@ export const authSlice = createSlice({
   reducers: {
     login: (state, action: PayloadAction<AuthLoginResult>) => {
       state.isAuthenticated = true;
-      state.token = action.payload.token;
+      state.access_token = action.payload.access_token;
       state.role = action.payload.role;
       localStorage.setItem("role", action.payload.role);
-      localStorage.setItem("token", action.payload.token);
-      localStorage.setItem("token", action.payload.refresh_token);
+      localStorage.setItem("access_token", action.payload.access_token);
+      localStorage.setItem("refresh_token", action.payload.refresh_token);
     },
     logout: (state) => {
       state.isAuthenticated = false;
-      state.token = "";
+      state.access_token = "";
       state.role = "none";
       localStorage.removeItem("role");
       localStorage.removeItem("token");
@@ -50,16 +50,16 @@ export const authSlice = createSlice({
       authApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
         state.isAuthenticated = true;
-        state.token = payload.token;
+        state.access_token = payload.access_token;
         state.role = payload.role;
         localStorage.setItem("role", payload.role);
-        localStorage.setItem("token", payload.token);
+        localStorage.setItem("access_token", payload.access_token);
         localStorage.setItem("refresh_token", payload.refresh_token);
       },
     );
     builder.addMatcher(authApi.endpoints.check.matchFulfilled, (state) => {
       state.isAuthenticated = true;
-      state.token = localStorage.getItem("token") ?? "";
+      state.access_token = localStorage.getItem("access_token") ?? "";
       state.role = localStorage.getItem("role") as UserRole;
     });
   },

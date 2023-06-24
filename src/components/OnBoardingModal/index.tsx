@@ -4,6 +4,9 @@ import { Fragment, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ApiError, useLoginMutation } from "@/store/api/authApi";
+import { login } from "@/store/authSlice";
+import LoadingButton from "../LoadingButton";
 
 type Props = {
   isOpen: boolean;
@@ -11,7 +14,7 @@ type Props = {
 };
 
 const loginValidationSchema = z.object({
-  username_email: z.string().min(1, { message: "This field is required" }),
+  email: z.string().min(1, { message: "This field is required" }),
   password: z.string().min(1, { message: "This field is required" }),
 });
 
@@ -23,18 +26,30 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
   );
 
   const methods = useForm<LoginValidationSchema>({
-    defaultValues: { username_email: "", password: "" },
+    defaultValues: { email: "", password: "" },
     resolver: zodResolver(loginValidationSchema),
   });
 
   const {
     handleSubmit,
     register,
+    setError,
     formState: { errors, isSubmitting },
   } = methods;
 
+  const [loginAPIfunc] = useLoginMutation();
+
   const onSubmit: SubmitHandler<LoginValidationSchema> = async (data) => {
-    console.log("submitting", data);
+    try {
+      const result = await loginAPIfunc(data);
+      if ("error" in result) {
+        throw result.error;
+      }
+      login(result.data);
+      closeModal();
+    } catch (err) {
+      setError("root", { message: (err as { data: ApiError }).data.message });
+    }
   };
 
   return (
@@ -91,12 +106,12 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
                     onSubmit={handleSubmit(onSubmit)}>
                     <input
                       type="text"
-                      {...register("username_email")}
+                      {...register("email")}
                       placeholder="Username or email"
                       className="rounded-sm bg-slate-100 px-3 py-2"
                     />
                     <p className="mt-1 text-xs italic text-red-500 empty:hidden">
-                      {errors.username_email?.message}
+                      {errors.email?.message}
                     </p>
                     <input
                       type="password"
@@ -107,13 +122,19 @@ export default function OnBoardingModal({ isOpen, closeModal }: Props) {
                     <p className="mt-1 text-xs italic text-red-500 empty:hidden">
                       {errors.password?.message}
                     </p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <button
+
+                    <p className="mt-2 text-sm italic text-red-500">
+                      {errors.root?.message}
+                    </p>
+
+                    <div className="mt-4 flex items-center justify-between">
+                      <LoadingButton
+                        loading={isSubmitting}
                         type="submit"
                         disabled={isSubmitting}
                         className="rounded-md bg-facebook px-8 py-2 font-semibold text-white">
                         LOG IN
-                      </button>
+                      </LoadingButton>
                       <button
                         type="button"
                         className="text-gray-400"

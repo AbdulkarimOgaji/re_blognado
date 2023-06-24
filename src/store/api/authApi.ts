@@ -1,24 +1,28 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { AuthLoginResult } from "../authSlice";
 import { RootState } from "../store";
-import { UserRole } from "../utils/types";
 
 type AuthLoginRequest = {
   email: string;
   password: string;
-  role: UserRole;
 };
+
+export interface ApiError {
+  data: any;
+  status: string;
+  message: string;
+  error: boolean;
+}
 
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
+      const token = (getState() as RootState).auth.access_token;
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
-      headers.set("x-project", import.meta.env.VITE_X_PROJECT);
       return headers;
     },
   }),
@@ -36,7 +40,7 @@ export const authApi = createApi({
         method: "POST",
         body: { role },
         headers: {
-          authorization: `Bearer ${localStorage.getItem("token") ?? ""}`,
+          authorization: `Bearer ${localStorage.getItem("access_token") ?? ""}`,
         },
       }),
     }),

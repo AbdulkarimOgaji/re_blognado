@@ -1,8 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { Fragment, useState } from "react";
-import { Link } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import OnBoardingModal from "../OnBoardingModal";
+import { useAppSelector } from "@/store/store";
 
 type Props = {
   isOpen: boolean;
@@ -10,7 +11,14 @@ type Props = {
 };
 
 export default function SideBar({ isOpen, closeModal }: Props) {
+  const authState = useAppSelector((state) => state.auth);
   const [onBoarding, setOnBoarding] = useState(false);
+
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    closeModal();
+  }, [pathname]);
 
   return (
     <>
@@ -79,13 +87,24 @@ export default function SideBar({ isOpen, closeModal }: Props) {
                         Games
                       </Link>
                     </li>
-                    <li>
-                      <button
-                        className="hover:text-primary-dark"
-                        onClick={() => setOnBoarding(true)}>
-                        Login / Register
-                      </button>
-                    </li>
+                    {authState.isAuthenticated ? (
+                      <li>
+                        <Link to="/profile" className="hover:text-primary-dark">
+                          Profile
+                        </Link>
+                      </li>
+                    ) : (
+                      <li>
+                        <button
+                          className="hover:text-primary-dark"
+                          onClick={() => {
+                            setOnBoarding(true);
+                            closeModal();
+                          }}>
+                          Login / Register
+                        </button>
+                      </li>
+                    )}
                   </ul>
                 </Dialog.Panel>
               </Transition.Child>
@@ -94,7 +113,7 @@ export default function SideBar({ isOpen, closeModal }: Props) {
         </Dialog>
       </Transition>
       <OnBoardingModal
-        isOpen={onBoarding}
+        isOpen={onBoarding && !authState.isAuthenticated}
         closeModal={() => setOnBoarding(false)}
       />
     </>

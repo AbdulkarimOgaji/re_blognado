@@ -17,6 +17,8 @@ body {
 [data-popper-placement^="top"] .author-popper-arrow:before {
   transform: translateY(8px) rotate(45deg);
   margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
   border-bottom: 1px solid theme(colors.gray.300);
   border-right: 1px solid theme(colors.gray.300);
 }
@@ -26,10 +28,16 @@ body {
 }
 
 [data-popper-placement^="right"] .author-popper-arrow:before {
-  background-color: green;
+  margin-top: auto;
+  margin-bottom: auto;
+  transform: translateX(-8px) rotate(45deg);
+  border-bottom: 1px solid theme(colors.gray.300);
+  border-left: 1px solid theme(colors.gray.300);
 }
 
 [data-popper-placement^="bottom"] .author-popper-arrow:before {
+  margin-left: auto;
+  margin-right: auto;
   transform: translateY(-8px) rotate(45deg);
   border-top: 1px solid theme(colors.gray.300);
   border-left: 1px solid theme(colors.gray.300);
